@@ -126,9 +126,12 @@ async function on_reset() {
 }
 const downloading_traits= ref(true)
 async function cache_download(){
+  var bg_img= new Image()
+  bg_img.src= new URL("../public/bg_transparent.png", import.meta.url).href
   for(let i of use_traits_data.data.value){
-    if(i.name=='base') continue
+    if(i.name=='base' || i.name=="bangs_shadow" || i.name=="hat_bottom") continue
     for(let j= 0; j<i.max_trait; j+=1){
+      
       var path= new URL(i.base_path+`${j}.png`, import.meta.url).href
       var img= new Image()
       img.src= path

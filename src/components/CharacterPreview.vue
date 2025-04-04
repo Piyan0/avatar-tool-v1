@@ -687,7 +687,7 @@
 
 <style scoped>
   .bg-transparent {
-    background-image: url(bg_transparent.png);
+    background-image: url('../../public/bg_transparent.png');
   }
   .d {
     border: 2px solid blue;

@@ -54,7 +54,7 @@ export function get_color_by_global_id(idx){
 
 export function color_to_global_id(color){
   for(let i=0; i< all_colors.length; i+= 1){
-    if(all_colors[i].preview== color.preview){
+    if(JSON.stringify(all_colors[i].rgba)== JSON.stringify(color.rgba)){
       return i
     }
   }

@@ -391,6 +391,7 @@
     use_traits_data.get_data(_category).last_selected_trait_id = id;
   }
   async function catch_trait_change(_category = "hats", new_path = "../images/traits/hats/1.png", id = 0) {
+    if(loading.value) return
     if (_category != "base") {
       current_trait_id.value = id;
     }
@@ -458,6 +459,7 @@
   //set the category before changing the color.
   //follow the original color data data structure defined in base_color.js
   async function catch_color_change(new_color, idx) {
+    if(loading.value) return
     //console.log(new_color);
     force_update = [];
     last_color_changed.value = current_category.value;
@@ -531,6 +533,7 @@
   }
 
   async function randomize() {
+    if(loading.value==true) return
     torso_mode = "shirt";
     prev_torso_mode = "shirt";
     get_cat("special").path = "../images/traits/special/0.png";

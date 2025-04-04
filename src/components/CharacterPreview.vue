@@ -76,7 +76,7 @@
     const main_canvas = document.createElement("canvas");
     const ctx = main_canvas.getContext("2d");
     var canvas_size_setted = false;
-    //console.log(data)
+    console.log(data)
 
     for (let i of _data) {
       if (i.name == "special") {
@@ -275,9 +275,16 @@
 
   async function add_traits_to_canvas(ctx, _category, _data) {
     const need_extra = () => {
-      if (base_gender.value == "male") return false;
+      if (base_gender.value == "male") {
+        console.log("Traits don't need extra, since it was male.")
+        return false
+      };
       const _traits = ["hair", "shirt", "special", "top"];
-      return _traits.includes(_category);
+      var cat_in_offset= _traits.includes(_category)
+      if(!cat_in_offset){
+        console.log({info: "category is not in extra list.", category: _category})
+      }
+      return cat_in_offset
     };
 
     //console.log(_category, need_extra(), base_gender.value)
@@ -399,12 +406,17 @@
       change_trait_path(use_traits_data.get_data("top").base_path + "0.png", 0, "top");
       change_trait_path(use_traits_data.get_data("sleeve").base_path + "0.png", 0, "sleeve");
 
+      use_traits_data.get_data('shirt').last_selected_trait_id=0
+      use_traits_data.get_data('top').last_selected_trait_id=0
+      use_traits_data.get_data('sleeve').last_selected_trait_id=0
+      
       force_update.push("shirt");
       force_update.push("top");
       force_update.push("sleeve");
     } else if (torso_mode == "shirt" && prev_torso_mode != "shirt") {
       change_trait_path(use_traits_data.get_data("special").base_path + "0.png", 0, "special");
       force_update.push("special");
+      use_traits_data.get_data('special').last_selected_trait_id=0
     }
 
     //console.log(torso_mode)
@@ -592,14 +604,14 @@
       url: window.location.origin + window.location.pathname + "?p=" + SimpleBase.encode(r, 36),
       str: r,
     };
-    //console.log(obj.url);
+    console.log(r);
     return obj;
   }
 
   async function from_url(_url = "2ex00w8xq7to10bmo0fjrhrguibvk2zpytv6apggw87v53x5zybu86hcq2giwp8drle5jb86l787wohpdwxx3k3ksqs28kfemadi7e17d5g5k9ty8hj9bpkrc82s3mpk2ssrcalqwt071a1x7o1iaunfz1r1m08zgkb8i7zkjbvsxm6o6vycbm9wivvo5dyscqqbyvuc2g4u4ezret0n2ofhnxl9wakcqkfa0w7iruufv8m5fbfodusst6bhwamt95ku02hu47v5y389qich6pa") {
     //url= SimpleBase.base36.decode(url)
     _url = SimpleBase.base36.decode(_url);
-    console.log(_url);
+    //console.log(_url);
     if (_url.includes("female")) {
       base_gender.value = "female";
       previous_gender.value = "female";
@@ -622,10 +634,11 @@
     }
 
     for (let i = 0; i < data.length; i += 1) {
+      use_traits_data.get_data(data[i].name).last_selected_trait_id= parsed[i].last_selected_trait_id
       data[i].replaceColor = parsed[i].colors;
       data[i].path = use_traits_data.get_data(data[i].name).base_path + `${parsed[i].last_selected_trait_id}.png`;
     }
-    console.log(data);
+    //console.log(data);
     want_to_reset = true;
     await set_up_data();
     want_to_reset = false;
@@ -670,6 +683,7 @@
 <template>
   <!--<button @click="to_url()" >share</button>-->
   <!--<button @click="from_url()" >from</button>-->
+  {{base_gender}}
   <div id="main" class="max-h-[200px] max-w-[356px] lg:min-w-[310px] lg:min-h-[250px] relative flex flex-1 flex-col">
     <img src="/loading.gif" v-show="loading" class="absolute w-[48px] right-2 bottom-2" alt="" />
     <div id="detail" class="flex items-center gap-2 mx-2">

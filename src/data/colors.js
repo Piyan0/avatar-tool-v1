@@ -53,7 +53,13 @@ export function get_color_by_global_id(idx){
 }
 
 export function color_to_global_id(color){
-  return all_colors.indexOf(color)
+  for(let i=0; i< all_colors.length; i+= 1){
+    if(all_colors[i].preview== color.preview){
+      return i
+    }
+  }
+  
+  return 'no match'
 }
 
 export function get_color_by_id(id_preview){
@@ -62,7 +68,7 @@ export function get_color_by_id(id_preview){
     
     for(let j of colors[i]){
       //console.log(j)
-      if(j.preview== id_preview){
+      if(JSON.stringify(i.rgba)== JSON.stringify(color.rgba)){
         return j
       }
     }
@@ -106,7 +112,7 @@ export function change_colors_to_global_id(_colors){
   var r= []
   
   for(let i of _colors){
-    r.push(all_colors.indexOf(i))
+    r.push(color_to_global_id(i))
   }
   
   return r

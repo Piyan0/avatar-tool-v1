@@ -6,7 +6,8 @@
   import TraitList from "@/data/trait_list.js";
   import NinePatch from "./NinePatch.vue";
   import base_color from "@/data/base_color.js";
-  import colors, {get_color_by_id, change_colors_to_id, colors_from_id, get_color_by_global_id, color_to_global_id, change_colors_to_global_id, colors_from_global_id} from "@/data/colors.js";
+  import univ_color from "@/data/univ_color.js";
+  import colors, {get_color_by_id, change_colors_to_id, colors_from_id, get_color_by_global_id, color_to_global_id, change_colors_to_global_id, colors_from_global_id, get_color_category, get_random_colors, get_random_color} from "@/data/colors.js";
   import trait_dependent from "@/data/trait_dependent.js";
   import color_dependent from "@/data/color_dependent.js";
   import * as SimpleBase from "simple-base";
@@ -56,6 +57,7 @@
   async function change_dependant_trait(parent, child, id) {
     var path = use_traits_data.get_data(child).base_path + `${id}.png`;
     //console.log('child>>',path)
+    use_traits_data.get_data(child).last_selected_trait_id = id;
     get_cat(child).path = path;
     get_cat(child).replaceColor = get_cat(parent).replaceColor;
     get_cat(child).defaultColor = get_cat(parent).defaultColor;
@@ -68,7 +70,7 @@
   async function set_up_data(_data = data) {
     if (loading.value == true) return;
     loading.value = true;
-    
+
     //console.log(use_traits_data.data.value)
 
     const main_canvas = document.createElement("canvas");
@@ -77,13 +79,13 @@
     //console.log(data)
 
     for (let i of _data) {
-      if(i.name=="special"){
-        if(i.path.includes(0)){
-          torso_mode= "shirt"
-          prev_torso_mode= "shirt"
-        }else{
-          torso_mode= "special"
-          prev_torso_mode= "special"
+      if (i.name == "special") {
+        if (i.path.includes(0)) {
+          torso_mode = "shirt";
+          prev_torso_mode = "shirt";
+        } else {
+          torso_mode = "special";
+          prev_torso_mode = "special";
         }
         //console.log('>>>',torso_mode)
       }
@@ -103,7 +105,7 @@
       }
 
       //console.log(i.name)
-      //onsole.log(i.name);
+      //console.log(i.name);
       const img = new Image();
       //using URL object for dynamic image ( Can't use an alias ), the .href props.
       img.src = new URL(i.path, import.meta.url).href;
@@ -159,7 +161,7 @@
           if (JSON.stringify(x) != JSON.stringify(y)) {
             var changed = await _change_colors(sub_canvas.toDataURL(), {x: 128, y: 135}, x, y);
             sub_ctx.drawImage(changed, 0, 0);
-          }else{
+          } else {
             //createElementonsole.log('Same')
           }
 
@@ -328,7 +330,7 @@
     if (master_image == null) {
       return;
     }
-    const upscale = 1;
+    const upscale = 6;
 
     const cvs = document.createElement("canvas");
     const ctx = cvs.getContext("2d");
@@ -382,18 +384,16 @@
     use_traits_data.get_data(_category).last_selected_trait_id = id;
   }
   async function catch_trait_change(_category = "hats", new_path = "../images/traits/hats/1.png", id = 0) {
-    
     if (_category != "base") {
       current_trait_id.value = id;
     }
-    
+
     if (_category == "special") {
       torso_mode = "special";
     } else if (["top", "shirt", "sleeve"].includes(_category)) {
       torso_mode = "shirt";
     }
-    
-    
+
     if (torso_mode == "special" && prev_torso_mode != "special") {
       change_trait_path(use_traits_data.get_data("shirt").base_path + "0.png", 0, "shirt");
       change_trait_path(use_traits_data.get_data("top").base_path + "0.png", 0, "top");
@@ -517,6 +517,7 @@
     saved_data.gender = base_gender.value;
     localStorage.setItem("avatar_saved", JSON.stringify(saved_data));
   }
+
   async function randomize() {
     torso_mode = "shirt";
     prev_torso_mode = "shirt";
@@ -531,9 +532,17 @@
         random += 1;
       }
       i.path = toRaw(use_traits_data.get_data(i.name).base_path) + `${random}.png`;
-      //console.log(i.path)
+      var total_color = use_traits_data.get_data(i.name).total_color;
+      if (total_color > 0 && i.name != "base") {
+        for (let j = 0; j < i.replaceColor.length; j += 1) {
+          i.replaceColor[j] = get_random_color(i.replaceColor[j]);
+        }
+      }
+      // console.log(i.replaceColor.length)
     }
-
+    
+    //change base color
+    get_cat('base').replaceColor= [base_color[Math.floor(Math.random()* (base_color.length-1))]]
     //dependent traits
     for (let i in depends_traits) {
       for (let j of depends_traits[i]) {
@@ -542,7 +551,16 @@
         change_dependant_trait(j.parent, j.child, id);
       }
     }
+
+    for (let i in depends_color) {
+      for (let j of depends_color[i]) {
+        change_dependant_color(j.parent, j.child, j.take, j.place);
+      }
+    }
+    want_to_reset= true
     await set_up_data();
+    want_to_reset= false
+    //console.log(toRaw(use_traits_data.data));
   }
 
   function to_url() {
@@ -571,7 +589,7 @@
     }
 
     var obj = {
-      url:window.location.origin+ window.location.pathname+ "?p=" + SimpleBase.encode(r, 36),
+      url: window.location.origin + window.location.pathname + "?p=" + SimpleBase.encode(r, 36),
       str: r,
     };
     //console.log(obj.url);
@@ -581,7 +599,7 @@
   async function from_url(_url = "2ex00w8xq7to10bmo0fjrhrguibvk2zpytv6apggw87v53x5zybu86hcq2giwp8drle5jb86l787wohpdwxx3k3ksqs28kfemadi7e17d5g5k9ty8hj9bpkrc82s3mpk2ssrcalqwt071a1x7o1iaunfz1r1m08zgkb8i7zkjbvsxm6o6vycbm9wivvo5dyscqqbyvuc2g4u4ezret0n2ofhnxl9wakcqkfa0w7iruufv8m5fbfodusst6bhwamt95ku02hu47v5y389qich6pa") {
     //url= SimpleBase.base36.decode(url)
     _url = SimpleBase.base36.decode(_url);
-    //console.log(_url)
+    console.log(_url);
     if (_url.includes("female")) {
       base_gender.value = "female";
       previous_gender.value = "female";
@@ -607,7 +625,7 @@
       data[i].replaceColor = parsed[i].colors;
       data[i].path = use_traits_data.get_data(data[i].name).base_path + `${parsed[i].last_selected_trait_id}.png`;
     }
-
+    console.log(data);
     want_to_reset = true;
     await set_up_data();
     want_to_reset = false;
@@ -616,14 +634,17 @@
     is_transparent.value = cond;
   }
   onMounted(async () => {
-    var url= new URLSearchParams(window.location.search)
-    if(url!=''){
-      from_url(url.get('p'))
-      return
+    var url = new URLSearchParams(window.location.search);
+    if (url != "") {
+      from_url(url.get("p"));
+      return;
     }
     await set_up_data();
-    
   });
+
+  function test() {
+    console.log(get_color_category(univ_color[0]));
+  }
 
   //define expose using ref, and the property will bound to component instance, else, it is just a plain data, not bound to anything.
   defineExpose({
@@ -642,12 +663,11 @@
     is_transparent,
     set_is_transparent,
     load,
-    to_url
+    to_url,
   });
 </script>
 
 <template>
-  
   <!--<button @click="to_url()" >share</button>-->
   <!--<button @click="from_url()" >from</button>-->
   <div id="main" class="max-h-[200px] max-w-[356px] lg:min-w-[310px] lg:min-h-[250px] relative flex flex-1 flex-col">

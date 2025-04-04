@@ -17,6 +17,37 @@ const all_colors= [
   ]
 export default colors
 
+export function get_color_category(color){
+  for(let i in colors){
+    for(let j of colors[i]){
+      if(JSON.stringify(j.rgba)== JSON.stringify(color.rgba)) return {'category': i, 'preview': j.preview}
+    }
+}
+  return 'no match'
+}
+
+export function get_random_colors(sample_colors){
+  var r= []
+  for (let i of sample_colors){
+    var category_name= get_color_category(i.preview)
+    var random_idx= Math.floor(Math.random()*(colors[category_name].length-1))
+    r.push(colors[category_name][random_idx])
+  }
+
+  return r
+
+}
+export function get_random_color(sample_color){
+  var category_name= get_color_category(sample_color).category
+  //console.log(category_name)
+  var random_idx= Math.floor(Math.random()*(colors[category_name].length-1))
+  return colors[category_name][random_idx]
+  
+
+  
+
+}
+
 export function get_color_by_global_id(idx){
   return all_colors[idx]
 }

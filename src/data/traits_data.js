@@ -220,9 +220,20 @@ function get_data(name) {
     }
   }
 }
+
+function get_random_colors(_colors){
+  var r= []
+  for(let i of _colors){
+    var random=Math.floor(Math.random() * (i.length-1))
+    r.push(toRaw(i[random]))
+  }
+  return r
+}
+
 export default function useTraitsDetail() {
   return {
     data,
-    get_data
+    get_data,
+    get_random_colors,
   };
 }

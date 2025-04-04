@@ -1,5 +1,5 @@
 <script setup>
-import { ref, nextTick, toRaw } from "vue";
+import { ref, nextTick, toRaw, onMounted } from "vue";
 import Data from "./data/current_data.js";
 import TraitsData from "./data/traits_data.js";
 import CharacterPreview from "./components/CharacterPreview.vue";
@@ -124,11 +124,38 @@ async function on_reset() {
   await avatar.value.reset();
   //control.value.set_gender_active(data.current_gender.value)
 }
+const downloading_traits= ref(true)
+async function cache_download(){
+  for(let i of use_traits_data.data.value){
+    if(i.name=='base') continue
+    for(let j= 0; j<i.max_trait; j+=1){
+      var path= new URL(i.base_path+`${j}.png`, import.meta.url).href
+      var img= new Image()
+      img.src= path
+      await new Promise(res=>{img.onload= res})
+      downloading_traits.value= false
+    }
+    for(let j= 0; j<i.max_trait; j+=1){
+      var path= new URL(i.preview_path+`${j}.png`, import.meta.url).href
+      var img= new Image()
+      img.src= path
+      await new Promise(res=>{img.onload= res})
+      downloading_traits.value= false
+    }
+  }
+  
+  
+}
+
+onMounted(()=>{
+  cache_download()
+})
 </script>
 
 <template>
   
   <div class="relative container">
+
     <!--<div class="fixed w-full h-full z-20 top-0 left-0 flex justify-center items-center">-->
     <!--  <div class="absolute w-[80vw] h-[80vh] flex justify-center items-center border-4 border-[#5E1818]">-->
     <!--    <img src="./images/icon/close.png" class="absolute top-2 right-2 z-30" width=10 alt="">-->

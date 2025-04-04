@@ -59,8 +59,8 @@
     //console.log('child>>',path)
     use_traits_data.get_data(child).last_selected_trait_id = id;
     get_cat(child).path = path;
-    get_cat(child).replaceColor = get_cat(parent).replaceColor;
-    get_cat(child).defaultColor = get_cat(parent).defaultColor;
+    //get_cat(child).replaceColor = get_cat(parent).replaceColor;
+    //get_cat(child).defaultColor = get_cat(parent).defaultColor;
     //await set_up_data();
   }
 
@@ -76,7 +76,7 @@
     const main_canvas = document.createElement("canvas");
     const ctx = main_canvas.getContext("2d");
     var canvas_size_setted = false;
-    //console.log(data)
+    console.log(data)
 
     for (let i of _data) {
       if (i.name == "special") {
@@ -556,6 +556,7 @@
     //change base color
     get_cat('base').replaceColor= [base_color[Math.floor(Math.random()* (base_color.length-1))]]
     //dependent traits
+
     for (let i in depends_traits) {
       for (let j of depends_traits[i]) {
         //using regex here, well, I could set the last_selected_trait_id above, but this works!
@@ -563,7 +564,6 @@
         change_dependant_trait(j.parent, j.child, id);
       }
     }
-
     for (let i in depends_color) {
       for (let j of depends_color[i]) {
         change_dependant_color(j.parent, j.child, j.take, j.place);

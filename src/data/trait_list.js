@@ -91,7 +91,7 @@ export default [
 		"name": "bangs_shadow",
 		"input": "user",
 		"path": "../images/traits/bangs_shadow/0.png",
-		"defaultColor": [base_color[0], base_color[0]],
+		"defaultColor": [base_color[0], base_color[2]],
 		"transparent": false,
 		"replaceColor": [base_color[0], base_color[0]],
 		"last_image": null,

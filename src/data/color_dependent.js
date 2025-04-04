@@ -2,6 +2,14 @@ export default {
 	"base": [
 		{
 			"parent": "base",
+			"child": "bangs_shadow",
+			//take color index from parent
+			"take": 0,
+			//place in spesific idx on child
+			"place": 0,
+		},
+		{
+			"parent": "base",
 			"child": "bangs",
 			//take color index from parent
 			"take": 0,

@@ -76,7 +76,7 @@
     const main_canvas = document.createElement("canvas");
     const ctx = main_canvas.getContext("2d");
     var canvas_size_setted = false;
-    console.log(data)
+    //console.log(data)
 
     for (let i of _data) {
       if (i.name == "special") {
@@ -276,13 +276,13 @@
   async function add_traits_to_canvas(ctx, _category, _data) {
     const need_extra = () => {
       if (base_gender.value == "male") {
-        console.log("Traits don't need extra, since it was male.")
+        //console.log("Traits don't need extra, since it was male.")
         return false
       };
       const _traits = ["hair", "shirt", "special", "top"];
       var cat_in_offset= _traits.includes(_category)
       if(!cat_in_offset){
-        console.log({info: "category is not in extra list.", category: _category})
+        //console.log({info: "category is not in extra list.", category: _category})
       }
       return cat_in_offset
     };
@@ -683,7 +683,7 @@
 <template>
   <!--<button @click="to_url()" >share</button>-->
   <!--<button @click="from_url()" >from</button>-->
-  {{base_gender}}
+
   <div id="main" class="max-h-[200px] max-w-[356px] lg:min-w-[310px] lg:min-h-[250px] relative flex flex-1 flex-col">
     <img src="/loading.gif" v-show="loading" class="absolute w-[48px] right-2 bottom-2" alt="" />
     <div id="detail" class="flex items-center gap-2 mx-2">

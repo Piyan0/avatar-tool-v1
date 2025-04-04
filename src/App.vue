@@ -132,14 +132,14 @@ async function cache_download(){
       var path= new URL(i.base_path+`${j}.png`, import.meta.url).href
       var img= new Image()
       img.src= path
-      await new Promise(res=>{img.onload= res})
+      //await new Promise(res=>{img.onload= res})
       downloading_traits.value= false
     }
     for(let j= 0; j<i.max_trait; j+=1){
       var path= new URL(i.preview_path+`${j}.png`, import.meta.url).href
       var img= new Image()
       img.src= path
-      await new Promise(res=>{img.onload= res})
+      //await new Promise(res=>{img.onload= res})
       downloading_traits.value= false
     }
   }

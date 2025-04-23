@@ -128,6 +128,11 @@ const downloading_traits= ref(true)
 async function cache_download(){
   var bg_img= new Image()
   bg_img.src= new URL("../public/bg_transparent.png", import.meta.url).href
+  
+  var female_base= new Image()
+  female_base.src= new URL("./images/base/female.png" , import.meta.url).href
+  
+  
   for(let i of use_traits_data.data.value){
     if(i.name=='base' || i.name=="bangs_shadow" || i.name=="hat_bottom") continue
     for(let j= 0; j<i.max_trait; j+=1){
@@ -200,12 +205,12 @@ onMounted(()=>{
           class="flex flex-1 lg:flex-initial flex-col overflow-hidden"
         >
           <div class="flex justify-center gap-2">
-            <
+            
             <TraitsBar
               ref="traits_bar"
               @category_selected="on_category_selected"
             ></TraitsBar>
-            >
+            
           </div>
 
           <TraitsDisplay

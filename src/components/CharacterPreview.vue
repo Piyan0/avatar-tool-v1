@@ -13,7 +13,7 @@
   import * as SimpleBase from "simple-base";
 
   var reset_data = [];
-  const is_transparent = ref(false);
+  const is_transparent = ref(true);
   const current_data = Data();
   const use_traits_data = TraitsData();
   const loading = ref(current_data.loading_state);
@@ -76,7 +76,7 @@
     const main_canvas = document.createElement("canvas");
     const ctx = main_canvas.getContext("2d");
     var canvas_size_setted = false;
-    console.log(data)
+    //console.log(data)
 
     for (let i of _data) {
       if (i.name == "special") {
@@ -607,7 +607,7 @@
       url: window.location.origin + window.location.pathname + "?p=" + SimpleBase.encode(r, 36),
       str: r,
     };
-    console.log(r);
+    //console.log(r);
     return obj;
   }
 
@@ -659,7 +659,7 @@
   });
 
   function test() {
-    console.log(get_color_category(univ_color[0]));
+    //console.log(get_color_category(univ_color[0]));
   }
 
   //define expose using ref, and the property will bound to component instance, else, it is just a plain data, not bound to anything.
@@ -688,7 +688,7 @@
   <!--<button @click="from_url()" >from</button>-->
 
   <div id="main" class="max-h-[200px] max-w-[356px] lg:min-w-[310px] lg:min-h-[250px] relative flex flex-1 flex-col">
-    <img src="/loading.gif" v-show="loading" class="absolute w-[48px] right-2 bottom-2" alt="" />
+    <img src="/loading.gif" v-show="loading" class="z-20 absolute w-[48px] right-2 bottom-2" alt="" />
     <div id="detail" class="flex items-center gap-2 mx-2">
       <img width="16" class="" src="../images/icon/love.png" alt="" />
       <p class="text-amber-100 text-xs">* Untitled_avatar.png</p>
